@@ -29,10 +29,12 @@
                             $response = json_decode($response, true);
                         
                             if (isset($response)) {
-                                setSessionParams($response, $rand);
-								$schema = $_SERVER['WEB_SECURE'] == 0 ? "http" : "https";
-                                $schema .= "://";
-                                header('Location: ' . $schema . $_SERVER['WEB_HOST'] . ':' . $_SERVER['FRONTEND_PORT'] . '/' . $_SESSION['returnUrl']);
+                                if (array_key_exists('status', $response) && $response['status'] == 200) {
+                                    setSessionParams($response, $rand);
+                                    $schema = $_SERVER['WEB_SECURE'] == 0 ? "http" : "https";
+                                    $schema .= "://";
+                                    header('Location: ' . $schema . $_SERVER['WEB_HOST'] . ':' . $_SERVER['FRONTEND_PORT'] . '/' . $_SESSION['returnUrl']);
+                                }
                             }
                             else error_log("Did not receive a response from the session login API.");
                         }
