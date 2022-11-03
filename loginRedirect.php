@@ -28,7 +28,7 @@
                             $response = json_decode($response, true);
                         
                             if (isset($response)) {
-                                if (array_key_exists('status', $response) && $response['status'] == 200) {
+                                if (!array_key_exists('status', $response) || $response['status'] == 200) {
                                     setSessionParams($response);
                                     header('Location: ' . PROTOCOL . DOMAIN . ':' . PORT . '/' . $_SESSION['returnUrl']);
                                 }
