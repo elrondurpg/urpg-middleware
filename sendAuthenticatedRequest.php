@@ -1,10 +1,11 @@
 <?php
-    header('Access-Control-Allow-Origin: ' . $_SERVER['FRONTEND_ORIGIN']); 
+    header('Access-Control-Allow-Origin: ' . URPG_WEBAPPS_URL_FULL); 
     header("Access-Control-Allow-Credentials: true");
     header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
     header('Access-Control-Max-Age: 1000');
     header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization');
 
+    include_once 'serverParams.php';
     include_once 'startSecureSession.php';
     include_once 'sendRequest.php';
 
@@ -13,9 +14,7 @@
 	$id = null;
 	$accessToken = null;
 	if ($input != null) {
-		$rand = rand(100000000, 999999999);
-		error_log($rand);
-		sec_session_start($rand . ", " . $input['url']);
+		sec_session_start();
 		if (isset($_SESSION)) {
 			if (array_key_exists('accessToken', $_SESSION)) {
 				$accessToken = $_SESSION['accessToken'];
@@ -26,7 +25,14 @@
 			}
 		}
 	
-		$response = sendRequest($input['method'], $input['url'], $id, $accessToken, $input['payload']);
+		$firstUrlResourceChar = substr($input['url'], 0, 1);
+		if ($firstUrlResourceChar != '/') {
+			$input['url'] = '/' . $input['url'];
+		}
+
+		$fullUrl = URPG_SERVER_URL_FULL . $input['url'];
+
+		$response = sendRequest($input['method'], $fullUrl, $id, $accessToken, $input['payload']);
 	
 		echo $response;
 	}

@@ -1,4 +1,5 @@
 <?php
+    include_once 'serverParams.php';
     include_once 'startSecureSession.php';
     include_once 'sendRequest.php';
 ?>
@@ -18,22 +19,18 @@
         <div class="viewport">
             <?php
                 outputHeader();
-                $rand = rand(100000000, 999999999);
-                error_log($rand);
-                sec_session_start($rand);
+                sec_session_start();
                 if ($_GET && array_key_exists('state', $_GET) && array_key_exists('code', $_GET)) {
                     if (isset($_SESSION) && array_key_exists('state', $_SESSION) && array_key_exists('returnUrl', $_SESSION)) {
                         if ($_GET['state'] == $_SESSION['state']) {
                             $requestBody = array('code' => $_GET['code']);
-                            $response = sendRequest("POST", SERVICE_HOST . "/session/login", null, null, $requestBody);
+                            $response = sendRequest("POST", URPG_SERVER_URL_FULL . "/session/login", null, null, $requestBody);
                             $response = json_decode($response, true);
                         
                             if (isset($response)) {
                                 if (array_key_exists('status', $response) && $response['status'] == 200) {
-                                    setSessionParams($response, $rand);
-                                    $schema = $_SERVER['WEB_SECURE'] == 0 ? "http" : "https";
-                                    $schema .= "://";
-                                    header('Location: ' . $schema . $_SERVER['WEB_HOST'] . ':' . $_SERVER['FRONTEND_PORT'] . '/' . $_SESSION['returnUrl']);
+                                    setSessionParams($response);
+                                    header('Location: ' . PROTOCOL . DOMAIN . ':' . PORT . '/' . $_SESSION['returnUrl']);
                                 }
                             }
                             else error_log("Did not receive a response from the session login API.");
