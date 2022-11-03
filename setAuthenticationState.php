@@ -1,10 +1,12 @@
 <?php
+    include_once 'serverParams.php';
+    include_once 'startSecureSession.php';
+    
     header('Access-Control-Allow-Origin: ' . URPG_WEBAPPS_URL_FULL); 
     header("Access-Control-Allow-Credentials: true");
     header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
     header('Access-Control-Max-Age: 1000');
     header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization');
-    include_once 'startSecureSession.php';
 
     $input = json_decode(file_get_contents('php://input'), true);
     if (isset($input) && array_key_exists('state', $input)) {

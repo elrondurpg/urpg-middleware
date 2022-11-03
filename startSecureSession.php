@@ -21,7 +21,7 @@
     }
 
     function sec_session_start($shouldRefreshAPISession = false) {
-        session_name("cookie." . DOMAIN);
+        session_name("cookie_" . str_replace(".", "_", DOMAIN));
         exit_if_cookies_disabled();
         set_cookie_params();
         
